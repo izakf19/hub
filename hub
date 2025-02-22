@@ -5,7 +5,7 @@ local WhitelistedUsers = {
     [1597367724] = true,
     [7662948872] = true,
     [7274202949] = true,
-    [5618824336] = true
+    [5618824336] = true,
     [7679205715] = true
 }
 

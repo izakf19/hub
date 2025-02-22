@@ -1,0 +1,1160 @@
+local WhitelistedUsers = {
+    [7551881352] = true,
+    [4220256998] = true,
+    [7461078188] = true,
+    [1597367724] = true,
+    [7662948872] = true,
+    [7274202949] = true,
+    [5618824336] = true
+    [7679205715] = true
+}
+
+local player = game:GetService("Players").LocalPlayer
+
+if WhitelistedUsers[player.UserId] then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+
+    local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+
+    local Window =
+        Rayfield:CreateWindow(
+        {
+            Name = "IzakHub",
+            Icon = 0,
+            LoadingTitle = "IzakHub",
+            LoadingSubtitle = "by Izak",
+            Theme = "Default",
+            DisableRayfieldPrompts = true,
+            DisableBuildWarnings = false,
+            ConfigurationSaving = {
+                Enabled = true,
+                FolderName = "IzakHub"
+            }
+        }
+    )
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("Part") and obj.Name == "Part" then
+            local killScript = obj:FindFirstChild("Kill")
+
+            if killScript and killScript:IsA("Script") then
+                local position = obj.Position
+                local size = obj.Size
+
+                obj:Destroy()
+            end
+        end
+    end
+
+    local part = Instance.new("Part", workspace)
+    part.Material = Enum.Material.ForceField
+    part.Color = Color3.fromRGB(255, 0, 255)
+    part.CFrame = CFrame.new(0, -8.1, 0)
+    part.Size = Vector3.new(5000, 16, 5000)
+    part.Transparency = 0.5
+    part.Anchored = true
+    part.Name = "Saya's Platform"
+    part.Parent = nil
+
+    local Players = game:GetService("Players")
+    local player = game.Players.LocalPlayer
+    local teleportService = game:GetService("TeleportService")
+    local vc_inter = game:GetService("VoiceChatInternal")
+    local vc_service = game:GetService("VoiceChatService")
+    local StarterGui = game:GetService("StarterGui")
+
+    local Tabs = {}
+
+    Tabs["Main"] = Window:CreateTab("Main", "home")
+    Tabs["World"] = Window:CreateTab("World", "earth")
+    Tabs["Misc"] = Window:CreateTab("Misc", "clapperboard")
+    Tabs["Stalls"] = Window:CreateTab("Stalls", "clapperboard")
+    Tabs["Lag Server"] = Window:CreateTab("Lag Server", "clapperboard")
+
+    local deletedParts = {}
+    local Sections = {}
+
+    Sections["Character"] = Tabs["Main"]:CreateSection("Character")
+
+    Tabs["Main"]:CreateSlider(
+        {
+            Name = "WalkSpeed",
+            Range = {0, 100},
+            Increment = 1,
+            Suffix = "Speed",
+            CurrentValue = 16,
+            Flag = "WalkSpeedSlider",
+            Callback = function(Value)
+                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+            end
+        }
+    )
+
+    Tabs["Main"]:CreateButton(
+        {
+            Name = "Change Character",
+            CurrentValue = false,
+            Flag = "ChangeAvatar",
+            Callback = function()
+                game:GetService("ReplicatedStorage"):WaitForChild("ToggleDisallowEvent"):FireServer()
+
+                local player = game.Players.LocalPlayer
+
+                local args = {player.Name}
+
+                game:GetService("ReplicatedStorage"):WaitForChild("ModifyUserEvent"):FireServer(unpack(args))
+
+                game:GetService("ReplicatedStorage"):WaitForChild("ToggleDisallowEvent"):FireServer()
+            end
+        }
+    )
+
+    local Players = game:GetService("Players")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+    local ModifyUsername_upvr = ReplicatedStorage:WaitForChild("ModifyUsername")
+    local lastModifiedUsername = nil
+
+    Tabs["Main"]:CreateInput(
+        {
+            Name = "Copy Avatar",
+            CurrentValue = "",
+            PlaceholderText = "Enter Username",
+            RemoveTextAfterFocusLost = true,
+            Flag = "UsernameInput",
+            Callback = function(Text)
+                if Text and Text ~= "" then
+                    ModifyUsername_upvr:FireServer(Text)
+                end
+            end
+        }
+    )
+
+    local Sections2 = {}
+
+    Sections2["Other"] = Tabs["Main"]:CreateSection("Other")
+
+    local coord1 = Vector3.new(4243, 3, 44)
+    local coord2 = Vector3.new(4199, 3, 77)
+
+    local midpoint = (coord1 + coord2) / 2
+
+    local size = Vector3.new(math.abs(coord1.X - coord2.X), 1, math.abs(coord1.Z - coord2.Z))
+
+    local part
+
+    local function createPart()
+        part = Instance.new("Part")
+        part.Name = "Solid-Private-Room"
+        part.Size = size
+        part.Position = midpoint
+        part.Anchored = true
+        part.BrickColor = BrickColor.new("Bright blue")
+        part.Material = Enum.Material.SmoothPlastic
+        part.Transparency = 1
+        part.Parent = workspace
+    end
+
+    local function togglePart()
+        if part then
+            part:Destroy()
+            part = nil
+        else
+            createPart()
+        end
+    end
+
+    Sections["Game"] = Tabs["Misc"]:CreateSection("Misc")
+
+    Tabs["Misc"]:CreateToggle(
+        {
+            Name = "Solid Private Room",
+            Callback = function()
+                togglePart()
+            end
+        }
+    )
+
+    local baseplate = nil
+    local borders = {}
+
+    local function createBorder(sizeX, sizeZ, posX, posZ)
+        local border = Instance.new("Part")
+        border.Size = Vector3.new(sizeX, 0.5, sizeZ)
+        border.Position = Vector3.new(posX, -8.1 + 16 / 2, posZ)
+        border.Anchored = true
+        border.Color = Color3.fromRGB(255, 0, 0)
+        border.Material = Enum.Material.Neon
+        border.Parent = game.Workspace
+        table.insert(borders, border)
+    end
+
+    local function createBaseplate()
+        if baseplate then
+            return
+        end
+
+        baseplate = Instance.new("Part")
+        baseplate.Size = Vector3.new(5000, 16, 5000)
+        baseplate.Position = Vector3.new(0, -8.1, 0)
+        baseplate.Anchored = true
+        baseplate.Transparency = 1
+        baseplate.CanCollide = true
+        baseplate.Material = Enum.Material.SmoothPlastic
+        baseplate.Color = Color3.fromRGB(0, 0, 0)
+        baseplate.Parent = game.Workspace
+
+        local edgeSize = baseplate.Size.X / 2
+
+        createBorder(1, baseplate.Size.Z, -edgeSize, 0)
+        createBorder(1, baseplate.Size.Z, edgeSize, 0)
+        createBorder(baseplate.Size.X, 1, 0, -edgeSize)
+        createBorder(baseplate.Size.X, 1, 0, edgeSize)
+    end
+
+    local function removeBaseplate()
+        if baseplate then
+            baseplate:Destroy()
+            baseplate = nil
+        end
+
+        for _, border in pairs(borders) do
+            border:Destroy()
+        end
+        borders = {}
+    end
+
+    Tabs["Misc"]:CreateToggle(
+        {
+            Name = "Antivoid",
+            CurrentValue = false,
+            Flag = "PlatformToggleFlag",
+            Callback = function(State)
+                if State then
+                    createBaseplate()
+                else
+                    removeBaseplate()
+                end
+            end
+        }
+    )
+
+    local toggleState = false
+
+    Tabs["Misc"]:CreateToggle(
+        {
+            Name = "Antisit",
+            Callback = function()
+                toggleState = not toggleState
+
+                for _, seat in workspace:GetDescendants() do
+                    if seat:IsA("Seat") then
+                        seat.Disabled = toggleState
+                    end
+                end
+            end
+        }
+    )
+
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+    local respawnEnabled = false
+
+    local UserInputService = game:GetService("UserInputService")
+
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+    local respawnEnabled = false
+    local lastDeathPosition = nil
+
+    Tabs["Misc"]:CreateToggle(
+        {
+            Name = "Respawn Point",
+            Default = false,
+            Callback = function(state)
+                respawnEnabled = state
+            end
+        }
+    )
+
+    local function onCharacterDied()
+        if not respawnEnabled then
+            return
+        end
+
+        local character = player.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            lastDeathPosition = character.HumanoidRootPart.Position
+        end
+    end
+
+    local function onCharacterAdded(newCharacter)
+        newCharacter:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
+
+        if respawnEnabled and lastDeathPosition then
+            local rootPart = newCharacter:WaitForChild("HumanoidRootPart")
+            rootPart.CFrame = CFrame.new(lastDeathPosition)
+        end
+    end
+
+    player.CharacterAdded:Connect(onCharacterAdded)
+
+    if player.Character then
+        onCharacterAdded(player.Character)
+    end
+
+    Sections["Teleports"] = Tabs["World"]:CreateSection("Teleports")
+
+    local player = game.Players.LocalPlayer
+
+    local teleportLocations = {
+        {Name = "Home", Position = Vector3.new(202.7, 40.87, 62.43)},
+        {Name = "Hot Tub", Position = Vector3.new(9999.03, 10053.98, 10015.86)},
+        {Name = "Diddy Party", Position = Vector3.new(10012.2, 10036.4, 10001.4)}
+    }
+
+    local function teleportToLocation(location)
+        if location then
+            player.Character:SetPrimaryPartCFrame(CFrame.new(location.Position))
+        else
+            warn("Location not found!")
+        end
+    end
+
+    for _, location in ipairs(teleportLocations) do
+        Tabs["World"]:CreateButton(
+            {
+                Name = "Teleport to " .. location.Name,
+                Callback = function()
+                    teleportToLocation(location)
+                end
+            }
+        )
+    end
+
+    Sections["Teleports 2"] = Tabs["World"]:CreateSection("Teleports 2")
+
+    local player = game.Players.LocalPlayer
+
+    local teleportLocations = {
+        {Name = "Donutshop", Position = Vector3.new(-77, 3.74, -80)},
+        {Name = "Stalls", Position = Vector3.new(140, 5, 74)},
+        {Name = "Toilets", Position = Vector3.new(-92, 5, 85)},
+        {Name = "Circle", Position = Vector3.new(26, 8, 86)},
+        {Name = "Tower", Position = Vector3.new(58, 313, 223)},
+        {Name = "Inside Privateroom", Position = Vector3.new(4220, 6, 60)},
+        {Name = "Outside Privateroom", Position = Vector3.new(4223, 24, 60)}
+    }
+
+    local function teleportToLocation(location)
+        if location then
+            player.Character:SetPrimaryPartCFrame(CFrame.new(location.Position))
+        else
+            warn("Location not found!")
+        end
+    end
+
+    for _, location in ipairs(teleportLocations) do
+        Tabs["World"]:CreateButton(
+            {
+                Name = "Teleport to " .. location.Name,
+                Callback = function()
+                    teleportToLocation(location)
+                end
+            }
+        )
+    end
+
+    local function teleportToLocation(location)
+        if location then
+            player.Character:SetPrimaryPartCFrame(CFrame.new(location.Position))
+        else
+            warn("Location not found!")
+        end
+    end
+
+    for _, location in ipairs(teleportLocations) do
+        Tabs["World"]:CreateButton(
+            {
+                Name = "Teleport to " .. location.Name,
+                Callback = function()
+                    teleportToLocation(location)
+                end
+            }
+        )
+    end
+
+    local function teleportToGame(placeId)
+        teleportService:Teleport(placeId, player)
+    end
+
+    Sections["Server"] = Tabs["Misc"]:CreateSection("Server")
+
+    Tabs["Misc"]:CreateButton(
+        {
+            Name = "Rejoin Server",
+            Callback = function()
+                local placeId = game.PlaceId
+                local jobId = game.JobId
+                teleportService:TeleportToPlaceInstance(placeId, jobId, player)
+            end
+        }
+    )
+
+    Tabs["Misc"]:CreateButton(
+        {
+            Name = "Server Hop",
+            Callback = function()
+                local TeleportService = game:GetService("TeleportService")
+                local HttpService = game:GetService("HttpService")
+
+                local Servers =
+                    "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+                local Server, Next = nil, nil
+                local function ListServers(cursor)
+                    local Raw = game:HttpGet(Servers .. ((cursor and "&cursor=" .. cursor) or ""))
+                    return HttpService:JSONDecode(Raw)
+                end
+
+                repeat
+                    local Servers = ListServers(Next)
+                    Server = Servers.data[math.random(1, (#Servers.data / 3))]
+                    Next = Servers.nextPageCursor
+                until Server
+
+                if Server.playing < Server.maxPlayers and Server.id ~= game.JobId then
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, Server.id, game.Players.LocalPlayer)
+                end
+            end
+        }
+    )
+
+    Sections["Stalls"] = Tabs["Stalls"]:CreateSection("Stalls")
+
+    Tabs["Stalls"]:CreateButton(
+        {
+            Name = "Stall Stealer",
+            Callback = function()
+                local isToggled = true
+
+                local function setProximityPromptSettings(stall, enabled)
+                    local ProximityPrompt =
+                        stall:FindFirstChild("Activate") and
+                        stall:FindFirstChild("Activate"):FindFirstChildOfClass("ProximityPrompt")
+                    if ProximityPrompt then
+                        ProximityPrompt.Enabled = true
+                        ProximityPrompt.ClickablePrompt = true
+                        if enabled then
+                            ProximityPrompt.MaxActivationDistance = 15
+                            ProximityPrompt.RequiresLineOfSight = false
+                            ProximityPrompt.HoldDuration = 0
+                        else
+                            ProximityPrompt.MaxActivationDistance = 10
+                            ProximityPrompt.RequiresLineOfSight = true
+                            ProximityPrompt.HoldDuration = 1
+                        end
+                    end
+                end
+
+                local function updateBoothProximityPrompts()
+                    local Folder = game.Workspace:FindFirstChild("Booth")
+                    if not Folder then
+                        return
+                    end
+
+                    for _, stallName in ipairs({"Booth01", "Booth02", "Booth03", "Booth04", "Booth05"}) do
+                        local stall = Folder:FindFirstChild(stallName)
+                        if stall then
+                            setProximityPromptSettings(stall, isToggled)
+                        end
+                    end
+                end
+
+                local function continuouslyApplyProximityPromptSettings()
+                    while true do
+                        updateBoothProximityPrompts()
+                        wait(1)
+                    end
+                end
+
+                local function setup()
+                    spawn(continuouslyApplyProximityPromptSettings)
+                end
+
+                setup()
+            end
+        }
+    )
+
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local Humanoid = Character:WaitForChild("Humanoid")
+    local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+    local Workspace = game:GetService("Workspace")
+    local Folder = Workspace:FindFirstChild("Booth") or Workspace:WaitForChild("Booth")
+
+    local Rep_Storage = game:GetService("ReplicatedStorage")
+    local Delete_Booth_Remote =
+        Rep_Storage:FindFirstChild("DeleteBoothOwnership") or Rep_Storage:WaitForChild("DeleteBoothOwnership")
+
+    local function fireAndUnclaimStall(stall)
+        local proximityPrompt = stall:FindFirstChild("Activate"):FindFirstChildOfClass("ProximityPrompt")
+        if proximityPrompt then
+            proximityPrompt.ClickablePrompt = true
+            proximityPrompt.RequiresLineOfSight = false
+            proximityPrompt.HoldDuration = 0
+            proximityPrompt.MaxActivationDistance = 17
+            wait(0.3)
+            Character:PivotTo(stall:GetPivot())
+            wait(0.1)
+            HumanoidRootPart.Anchored = true
+            wait(0.3)
+            fireproximityprompt(proximityPrompt, 10)
+            wait(0.5)
+            Delete_Booth_Remote:FireServer()
+            wait(0.2)
+            HumanoidRootPart.Anchored = false
+        else
+            return warn("Failed! ProximityPrompt is missing or doesn't exist.")
+        end
+    end
+
+    local function unclaimStalls()
+        local OldCF = HumanoidRootPart.CFrame
+        for _, stall in pairs(Folder:GetChildren()) do
+            if stall and stall:FindFirstChild("Activate") then
+                wait(0.3)
+                fireAndUnclaimStall(stall)
+            end
+        end
+        wait(0.3)
+        HumanoidRootPart.CFrame = OldCF
+        wait(0.2)
+        print("Finished Unclaiming ALL Booths.")
+    end
+
+    Tabs["Stalls"]:CreateButton(
+        {
+            Name = "Unclaim All Stalls",
+            Callback = function()
+                wait(0.2)
+                unclaimStalls()
+            end
+        }
+    )
+
+    Tabs["Stalls"]:CreateButton(
+        {
+            Name = "Delete Booth",
+            Callback = function()
+                game:GetService("ReplicatedStorage"):WaitForChild("DeleteBoothOwnership"):FireServer()
+            end
+        }
+    )
+
+    Tabs["Main"]:CreateButton(
+        {
+            Name = "Invis (vc doesnt work) - Press H",
+            Callback = function()
+                local Invis_Loaded = false
+                local INVIS_DEBUG = false
+                local Keybind = "H"
+                local Transparency = true
+                local NoClip = true
+
+                local Player = game.Players.LocalPlayer
+                local Workspace_Service = game.Workspace
+                local Run_Service = game:GetService("RunService")
+                local User_Input_Service = game:GetService("UserInputService")
+                local Sound_Service = game:GetService("SoundService")
+
+                Invis_Loaded = true
+
+                local RealCharacter = Player.Character or Player.CharacterAdded:Wait()
+                RealCharacter.Archivable = true
+                local FakeCharacter = RealCharacter:Clone()
+
+                local Part = Instance.new("Part", Workspace_Service)
+                Part.Anchored = true
+                Part.Size = Vector3.new(200, 1, 200)
+                Part.CFrame = CFrame.new(9999, 50, 999)
+                Part.CanCollide = true
+                Part.Name = "BasePart"
+
+                FakeCharacter.Parent = Workspace_Service
+                FakeCharacter.HumanoidRootPart.CFrame = Part.CFrame * CFrame.new(0, 5, 0)
+
+                for _, v in pairs(RealCharacter:GetChildren()) do
+                    if v:IsA("LocalScript") then
+                        local clone = v:Clone()
+                        clone.Disabled = true
+                        clone.Parent = FakeCharacter
+                    end
+                end
+
+                if Transparency then
+                    for _, v in pairs(FakeCharacter:GetDescendants()) do
+                        if v:IsA("BasePart") then
+                            v.Transparency = 0.5
+                        end
+                    end
+                end
+
+                local IsInvisible = false
+                local CanInvis = true
+                local PseudoAnchor = nil
+
+                local function ToggleInvisibility()
+                    if not IsInvisible then
+                        local StoredCF = RealCharacter.HumanoidRootPart.CFrame
+                        RealCharacter.HumanoidRootPart.CFrame = FakeCharacter.HumanoidRootPart.CFrame
+                        FakeCharacter.HumanoidRootPart.CFrame = StoredCF
+                        RealCharacter.Humanoid:UnequipTools()
+                        Player.Character = FakeCharacter
+                        Workspace_Service.CurrentCamera.CameraSubject = FakeCharacter.Humanoid
+                        PseudoAnchor = RealCharacter.HumanoidRootPart
+
+                        for _, v in pairs(FakeCharacter:GetChildren()) do
+                            if v:IsA("LocalScript") then
+                                v.Disabled = false
+                            end
+                        end
+
+                        IsInvisible = true
+                    else
+                        local StoredCF = FakeCharacter.HumanoidRootPart.CFrame
+                        FakeCharacter.HumanoidRootPart.CFrame = RealCharacter.HumanoidRootPart.CFrame
+                        RealCharacter.HumanoidRootPart.CFrame = StoredCF
+                        FakeCharacter.Humanoid:UnequipTools()
+                        Player.Character = RealCharacter
+                        Workspace_Service.CurrentCamera.CameraSubject = RealCharacter.Humanoid
+                        PseudoAnchor = FakeCharacter.HumanoidRootPart
+
+                        for _, v in pairs(FakeCharacter:GetChildren()) do
+                            if v:IsA("LocalScript") then
+                                v.Disabled = true
+                            end
+                        end
+
+                        IsInvisible = false
+                    end
+                end
+
+                local function OnCharacterDied()
+                    Invis_Loaded = false
+                    RealCharacter:Destroy()
+                    FakeCharacter:Destroy()
+                end
+
+                RealCharacter.Humanoid.Died:Connect(OnCharacterDied)
+
+                User_Input_Service.InputBegan:Connect(
+                    function(key, gameProcessed)
+                        if gameProcessed then
+                            return
+                        end
+                        if key.KeyCode.Name:lower() == Keybind:lower() and CanInvis then
+                            if
+                                RealCharacter:FindFirstChild("HumanoidRootPart") and
+                                    FakeCharacter:FindFirstChild("HumanoidRootPart")
+                             then
+                                ToggleInvisibility()
+                            end
+                        end
+                    end
+                )
+                Run_Service.RenderStepped:Connect(
+                    function()
+                        if PseudoAnchor then
+                            PseudoAnchor.CFrame = Part.CFrame * CFrame.new(0, 5, 0)
+                        end
+                        if NoClip then
+                            for _, v in pairs(FakeCharacter:GetDescendants()) do
+                                if v:IsA("BasePart") then
+                                    v.CanCollide = false
+                                end
+                            end
+                        end
+                    end
+                )
+            end
+        }
+    )
+
+    local player = game.Players.LocalPlayer
+    local rootPart = nil
+
+    local function getRootPart()
+        local character = player.Character or player.CharacterAdded:Wait()
+        return character:WaitForChild("HumanoidRootPart")
+    end
+
+    rootPart = getRootPart()
+
+    player.CharacterAdded:Connect(
+        function(character)
+            task.wait(1)
+            rootPart = character:WaitForChild("HumanoidRootPart")
+        end
+    )
+
+    local function teleport()
+        if not rootPart then
+            warn("Root part not found! Waiting for character...")
+            rootPart = getRootPart()
+        end
+
+        local originalPosition = rootPart.Position
+        print("Saved Position: ", originalPosition)
+
+        local platform = Instance.new("Part")
+        platform.Size = Vector3.new(10, 1, 10)
+        platform.Position = Vector3.new(4230, -6.4, 60)
+        platform.Anchored = true
+        platform.Transparency = 1
+        platform.BrickColor = BrickColor.new("Bright yellow")
+        platform.Parent = game.Workspace
+
+        task.wait(0.5)
+
+        rootPart.CFrame = CFrame.new(4230, -2.9, 60)
+        print("Teleported to platform!")
+
+        task.wait(3)
+
+        rootPart.CFrame = CFrame.new(originalPosition)
+        print("Teleported back to: ", originalPosition)
+
+        task.wait(1)
+        platform:Destroy()
+    end
+
+    Tabs["Main"]:CreateButton(
+        {
+            Name = "facefuck",
+            Callback = function()
+                loadstring(
+                    game:HttpGet(
+                        "https://raw.githubusercontent.com/headingforafterlife/Roblox/refs/heads/main/Facefuck"
+                    )
+                )()
+            end
+        }
+    )
+
+    Tabs["Main"]:CreateKeybind(
+        {
+            Name = "anti facefuck",
+            CurrentKeybind = "Y",
+            HoldToInteract = false,
+            Flag = "Keybind1",
+            Callback = function(Keybind)
+                teleport()
+            end
+        }
+    )
+
+    Sections["Lag Server"] = Tabs["Lag Server"]:CreateSection("Lag Server")
+
+    local players = game:GetService("Players")
+    local replicatedStorage = game:GetService("ReplicatedStorage")
+    local runService = game:GetService("RunService")
+
+    local localPlayer = players.LocalPlayer
+
+    local ragdollEvent = replicatedStorage:FindFirstChild("RagdollEvent")
+    local unragdollEvent = replicatedStorage:FindFirstChild("UnragdollEvent")
+    local preRagdollEvent = replicatedStorage:FindFirstChild("PreRagdollEvent")
+
+    local ToggleDisallowEvent = replicatedStorage:WaitForChild("ToggleDisallowEvent")
+    local ModifyUserEvent = replicatedStorage:WaitForChild("ModifyUserEvent")
+
+    local ModifyUsername_upvr = replicatedStorage:WaitForChild("ModifyUsername")
+    local lastModifiedUsername = nil
+    local toggled = false
+
+    local micEvent = replicatedStorage:WaitForChild("MicEvent")
+
+    local enabled = false
+    local connection
+    local originalCFrames = {}
+
+    local function setVelocityToZero(part)
+        if part then
+            part.AssemblyLinearVelocity = Vector3.zero
+            part.AssemblyAngularVelocity = Vector3.zero
+        end
+    end
+
+    local function isDonutInInventory()
+        for _, item in ipairs(localPlayer.Backpack:GetChildren()) do
+            if item.Name == "GradientDonut" then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function loopFunction()
+        while toggled do
+            micEvent:FireServer("GradientDonut")
+
+            if isDonutInInventory() then
+                local donut = localPlayer.Backpack:FindFirstChild("GradientDonut")
+                if donut then
+                    donut.Parent = localPlayer.Character
+                end
+            end
+
+            wait(2)
+        end
+    end
+
+    local function toggleRagdoll()
+        local character = localPlayer.Character
+        if not character then
+            return
+        end
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        local rootPart = character:FindFirstChild("HumanoidRootPart")
+
+        if enabled then
+            -- First, switch the character to the new one
+            if toggled then
+                lastModifiedUsername = "izakf166"
+                ModifyUsername_upvr:FireServer("izakf166")
+                wait(1) -- Ensure the character switch happens before continuing
+            else
+                ToggleDisallowEvent:FireServer()
+                ModifyUserEvent:FireServer(localPlayer.Name)
+                wait(1) -- Ensure the character switch happens before continuing
+                ToggleDisallowEvent:FireServer()
+            end
+
+            -- Now, before ragdolling, freeze the character
+            -- Set the humanoid to PlatformStand so it doesn't move or react like it's ragdolling
+            if humanoid then
+                humanoid.PlatformStand = true
+            end
+
+            -- Anchor the character parts to freeze them in place
+            if rootPart then
+                rootPart.Anchored = true
+            end
+
+            -- Disable gravity to prevent falling
+            for _, part in pairs(character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.Anchored = true -- Anchor parts to freeze them
+                    part.AssemblyLinearVelocity = Vector3.zero -- Prevent any movement
+                    part.AssemblyAngularVelocity = Vector3.zero -- Prevent any rotational movement
+                end
+            end
+
+            -- Trigger ragdoll but the character will stay frozen in place
+            ragdollEvent:FireServer()
+            task.wait(0.2)
+
+            -- Apply additional freezing techniques to ensure no movement
+            local oldCFrame = rootPart.CFrame * CFrame.new(0, 2, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+            local offset = 100000
+
+            connection =
+                runService.Heartbeat:Connect(
+                function()
+                    if not character or not enabled then
+                        return
+                    end
+
+                    local parts = {
+                        Head = oldCFrame * CFrame.new(0, 0, -offset / 2),
+                        UpperTorso = oldCFrame * CFrame.new(0, offset, 0),
+                        LowerTorso = oldCFrame * CFrame.new(0, -offset / 2, 0),
+                        RightUpperArm = oldCFrame * CFrame.new(offset, 0, 0),
+                        RightLowerArm = oldCFrame * CFrame.new(offset * 1.5, 0, 0),
+                        RightHand = oldCFrame * CFrame.new(offset * 2, 0, 0),
+                        LeftUpperArm = oldCFrame * CFrame.new(-offset, 0, 0),
+                        LeftLowerArm = oldCFrame * CFrame.new(-offset * 1.5, 0, 0),
+                        LeftHand = oldCFrame * CFrame.new(-offset * 2, 0, 0),
+                        RightUpperLeg = oldCFrame * CFrame.new(offset / 2, -offset, 0),
+                        RightLowerLeg = oldCFrame * CFrame.new(offset / 2, -offset * 1.5, 0),
+                        RightFoot = oldCFrame * CFrame.new(offset / 2, -offset * 2, 0),
+                        LeftUpperLeg = oldCFrame * CFrame.new(-offset / 2, -offset, 0),
+                        LeftLowerLeg = oldCFrame * CFrame.new(-offset / 2, -offset * 1.5, 0),
+                        LeftFoot = oldCFrame * CFrame.new(-offset / 2, -offset * 2, 0)
+                    }
+
+                    for partName, cf in pairs(parts) do
+                        local part = character:FindFirstChild(partName)
+                        if part then
+                            part.CFrame = cf
+                            setVelocityToZero(part)
+                        end
+                    end
+                end
+            )
+
+            if toggled then
+                loopFunction()
+            end
+        else
+            unragdollEvent:FireServer()
+
+            if connection then
+                connection:Disconnect()
+            end
+
+            -- Restore all frozen parts
+            for _, part in pairs(character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.Anchored = false -- Unanchor parts to allow movement again
+                end
+            end
+
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.PlatformStand = false -- Disable PlatformStand to allow normal movement again
+                humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+            end
+
+            ToggleDisallowEvent:FireServer()
+            ModifyUserEvent:FireServer(localPlayer.Name)
+            wait(1) -- Added 1-second delay here
+            ToggleDisallowEvent:FireServer()
+        end
+    end
+
+    Tabs["Lag Server"]:CreateToggle(
+        {
+            Name = "Lag Switch",
+            CurrentValue = false,
+            Callback = function(state)
+                toggled = state
+                enabled = state
+                toggleRagdoll()
+            end
+        }
+    )
+
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    local targetItemNames = {"aura", "Fluffy Satin Gloves Black"}
+    local toggled = false
+
+    local function hasItemInName(accessory)
+        for _, itemName in pairs(targetItemNames) do
+            if accessory.Name:lower():find(itemName:lower()) then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function isAccessoryOnHeadOrAbove(accessory)
+        local handle = accessory:FindFirstChild("Handle")
+        if handle then
+            if handle.Parent and handle.Parent.Name == "Head" then
+                return true
+            end
+        end
+
+        local attachment = accessory:FindFirstChildWhichIsA("Attachment")
+        if attachment and attachment.Parent and attachment.Parent.Name == "Head" then
+            return true
+        end
+
+        if accessory.Parent and accessory.Parent:IsA("Model") then
+            local head = accessory.Parent:FindFirstChild("Head")
+            if head and handle then
+                if handle.Position.Y >= head.Position.Y then
+                    return true
+                end
+            end
+        end
+
+        return false
+    end
+
+    local function removeTargetedItems(character)
+        if not character then
+            return
+        end
+
+        for _, item in pairs(character:GetChildren()) do
+            if item:IsA("Accessory") and hasItemInName(item) then
+                if not isAccessoryOnHeadOrAbove(item) then
+                    item:Destroy()
+                end
+            end
+        end
+    end
+
+    local function removeGradientDonuts()
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and string.lower(obj.Name):find("gradientdonut") then
+                obj:Destroy()
+            end
+        end
+    end
+
+    local function continuouslyCheckItems()
+        while true do
+            if not toggled then
+                break
+            end
+
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.Character then
+                    removeTargetedItems(player.Character)
+                end
+            end
+
+            removeGradientDonuts()
+
+            Players.PlayerAdded:Connect(
+                function(player)
+                    player.CharacterAdded:Connect(
+                        function(character)
+                            task.wait(0.5)
+                            removeTargetedItems(character)
+                        end
+                    )
+                end
+            )
+
+            task.wait(1)
+        end
+    end
+
+    Tabs["Lag Server"]:CreateToggle(
+        {
+            Name = "Anti Lag",
+            CurrentValue = false,
+            Callback = function(state)
+                toggled = state
+                if toggled then
+                    continuouslyCheckItems()
+                end
+            end
+        }
+    )
+
+    Sections["Other"] = Tabs["Lag Server"]:CreateSection("Other")
+
+    Tabs["Lag Server"]:CreateButton(
+        {
+            Name = "Firework",
+            Callback = function()
+                local run = true
+                local plr = game:GetService("Players").LocalPlayer
+                local char = plr.Character
+
+                if char then
+                    local hrp = char:FindFirstChild("HumanoidRootPart")
+
+                    if hrp then
+                        local old = hrp.CFrame
+
+                        while run do
+                            task.wait()
+                            workspace.FallenPartsDestroyHeight = 0 / 0
+
+                            local replicatedStorage = game:GetService("ReplicatedStorage")
+                            replicatedStorage:WaitForChild("ToolEvent"):FireServer("FireworkLaunch")
+
+                            hrp.CFrame = CFrame.new(old.Position.X, old.Position.Y - 170, old.Position.Z)
+                            task.wait(1)
+
+                            local backpack = plr.Backpack
+                            local fireworkTool = backpack:FindFirstChild("FireworkLaunch")
+                            if fireworkTool then
+                                fireworkTool.Parent = char
+                            end
+
+                            if char:FindFirstChild("FireworkLaunch") then
+                                char.FireworkLaunch:Activate()
+                            end
+
+                            task.wait(1)
+
+                            hrp.CFrame = old
+
+                            task.wait(3)
+
+                            replicatedStorage:WaitForChild("DeleteInventory"):FireServer()
+
+                            run = false
+                        end
+                    end
+                end
+            end
+        }
+    )
+
+    local workspaceService = game:GetService("Workspace")
+
+    local function disableParticles()
+        for _, descendant in ipairs(workspaceService:GetDescendants()) do
+            if descendant:IsA("ParticleEmitter") then
+                descendant.Enabled = false
+            end
+        end
+    end
+
+    local function enableParticles()
+        for _, descendant in ipairs(workspaceService:GetDescendants()) do
+            if descendant:IsA("ParticleEmitter") then
+                descendant.Enabled = true
+            end
+        end
+    end
+
+    local particlesDisabled = false
+
+    local connection
+
+    local function toggleParticles(state)
+        particlesDisabled = state
+        if particlesDisabled then
+            disableParticles()
+
+            connection =
+                workspaceService.DescendantAdded:Connect(
+                function(descendant)
+                    if descendant:IsA("ParticleEmitter") then
+                        descendant.Enabled = false
+                    end
+                end
+            )
+        else
+            enableParticles()
+
+            if connection then
+                connection:Disconnect()
+                connection = nil
+            end
+        end
+    end
+
+    Tabs["Lag Server"]:CreateToggle(
+        {
+            Name = "Disable Firework",
+            Callback = toggleParticles
+        }
+    )
+
+    local scripts = {
+        "https://raw.githubusercontent.com/headingforafterlife/Roblox/refs/heads/main/Flashback-Rewind",
+        "https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source",
+        "https://raw.githubusercontent.com/headingforafterlife/Roblox/refs/heads/main/auto%20anti%20vc%20ban"
+    }
+
+    for _, url in ipairs(scripts) do
+        loadstring(game:HttpGet(url))()
+    end
+else
+    print("Access denied! You are not whitelisted.")
+    game:Shutdown() -- Closes the game for the player
+end
